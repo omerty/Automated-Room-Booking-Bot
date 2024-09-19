@@ -96,7 +96,7 @@ try:
             print(f"Found room: {building} {room_number}")
             row.click()
             print(f"Clicked on room {room_number}")
-            break  # Exit loop after clicking on the desired row
+            break
 
         try:
             Book_button = WebDriverWait(driver, 10).until(
@@ -107,6 +107,10 @@ try:
                 EC.element_to_be_clickable((By.ID, "btnConfirm"))
                 )
             Button_1.click()
+            Button_2 = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "btnOK"))
+                )
+            Button_2.click()
 
         except Exception as e:
             print(f"error: {e}")
