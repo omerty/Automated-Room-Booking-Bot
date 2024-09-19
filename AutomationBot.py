@@ -56,20 +56,60 @@ try:
         )
         continue_button.click()
 
-        calender_cells = driver.find_elements(By.CSS_SELECTOR, ".dayCell")
+        calender_cells = WebDriverWait(driver, 10).until(
+    EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".dayCell"))
+)
 
         for cell in calender_cells:
             day_number = cell.find_element(By.CSS_SELECTOR, "div").text
+
+            # Check if the day is unavailable
             if "dayUnavailable" in cell.get_attribute("class"):
                 print(f"Day {day_number} is unavailable")
+
+            # Check if the day is available
             elif "dayAvailable" in cell.get_attribute("class"):
                 print(f"Day {day_number} is available")
-                cell.click()
-                break
+
+                try:
+                    # Wait until the element is clickable
+                    WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable(cell)
+                    )
+                    cell.click()
+                    print(f"Clicked on day {day_number}")
+                    break  # Break after clicking on the first available day
+                except Exception as e:
+                    print(f"Error clicking on day {day_number}: {e}")
+
             else:
                 print(f"Day {day_number} is either past or today")
+            
 
-        
+        room_rows = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".ClickableRow"))
+        )
+
+        for row in room_rows:
+            building = row.find_element(By.XPATH, ".//td[1]").text
+            room_number = row.find_element(By.XPATH, ".//td[3]").text
+            print(f"Found room: {building} {room_number}")
+            row.click()
+            print(f"Clicked on room {room_number}")
+            break  # Exit loop after clicking on the desired row
+
+        try:
+            Book_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "btnOK"))
+                )
+            Book_button.click()
+            Button_1 = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "btnConfirm"))
+                )
+            Button_1.click()
+
+        except Exception as e:
+            print(f"error: {e}")
 
     except Exception as e:
         print(f"error: {e}")
